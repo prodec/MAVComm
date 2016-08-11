@@ -31,15 +31,11 @@
  *
  ****************************************************************************/
 
-
 package com.comino.mav.control;
 
 import com.comino.msp.main.control.listener.IMAVLinkListener;
 
 public interface IMAVMSPController extends IMAVController {
-
-	public boolean start() ;
+	public boolean start();
 	public void registerListener(Class<?> clazz, IMAVLinkListener listener);
-
-
 }

@@ -46,7 +46,6 @@ import org.mavlink.messages.MAV_MODE_FLAG_DECODE_POSITION;
 import org.mavlink.messages.MAV_SEVERITY;
 import org.mavlink.messages.MAV_STATE;
 import org.mavlink.messages.MAV_SYS_STATUS_SENSOR;
-import org.mavlink.messages.lquac.msg_actuator_control_target;
 import org.mavlink.messages.lquac.msg_altitude;
 import org.mavlink.messages.lquac.msg_attitude;
 import org.mavlink.messages.lquac.msg_attitude_target;
@@ -84,28 +83,26 @@ import com.comino.msp.model.segment.LogMessage;
 import com.comino.msp.model.segment.Status;
 import com.comino.msp.utils.MSPMathUtils;
 
-
 public class MAVLinkToModelParser {
-
 
 	private MAVLinkStream stream;
 	private DataModel model;
 
-	private HashMap<Class<?>,MAVLinkMessage>	    mavList     = null;
+	private HashMap<Class<?>,MAVLinkMessage> mavList = null;
 
 	private IMAVComm link = null;
 
 	private HashMap<Class<?>,IMAVLinkListener> listeners = null;
-	private List<IMAVLinkListener> mavListener 			 = null;
-	private List<IMAVMessageListener> msgListener        = null;
+	private List<IMAVLinkListener> mavListener = null;
+	private List<IMAVMessageListener> msgListener = null;
 
 	private List<IMSPModeChangedListener> modeListener = null;
 
 	private boolean isRunning = false;
-	private long    startUpAt = 0;
-	private long    t_armed_start = 0;
+	private long startUpAt = 0;
+	private long t_armed_start = 0;
 
-	private long    gpos_tms = 0;
+	private long gpos_tms = 0;
 
 	private LogMessage lastMessage = null;
 
@@ -152,8 +149,6 @@ public class MAVLinkToModelParser {
 				model.raw.di = lidar.current_distance / 100f;
 				model.raw.dicov = lidar.covariance / 100f;
 				model.sys.setSensor(Status.MSP_LIDAR_AVAILABILITY, true);
-
-
 			}
 		});
 
@@ -169,9 +164,7 @@ public class MAVLinkToModelParser {
 				model.servo.servo6 = servo.servo6_raw;
 				model.servo.servo7 = servo.servo7_raw;
 				model.servo.servo8 = servo.servo8_raw;
-
 				model.servo.tms = servo.time_usec;
-
 			}
 		});
 
@@ -189,7 +182,6 @@ public class MAVLinkToModelParser {
 			}
 		});
 
-
 		registerListener(msg_optical_flow_rad.class, new IMAVLinkListener() {
 			@Override
 			public void received(Object o) {
@@ -198,7 +190,6 @@ public class MAVLinkToModelParser {
 				model.raw.fY   = flow.integrated_y;
 				model.raw.fq   = flow.quality;
 				model.raw.fd   = flow.distance;
-
 				model.raw.tms  = flow.time_usec;
 			}
 		});
@@ -212,7 +203,6 @@ public class MAVLinkToModelParser {
 				model.hud.at   = alt.altitude_terrain;
 				model.hud.ar   = alt.altitude_relative;
 				model.hud.bc   = alt.bottom_clearance;
-
 			}
 		});
 
@@ -223,7 +213,6 @@ public class MAVLinkToModelParser {
 				msg_command_ack ack = (msg_command_ack)o;
 				// TODO 1.0 handle acknowledgement via Listener
 			}
-
 		});
 
 		registerListener(msg_attitude.class, new IMAVLinkListener() {
@@ -266,8 +255,6 @@ public class MAVLinkToModelParser {
 				model.attitude.srr = 0;
 				model.attitude.spr = 0;
 				model.attitude.syr = 0;
-
-				//System.out.println(att.toString());
 			}
 		});
 
@@ -284,7 +271,6 @@ public class MAVLinkToModelParser {
 				model.gps.latitude = gps.lat/1e7f;
 				model.gps.longitude = gps.lon/1e7f;
 				model.sys.setSensor(Status.MSP_GPS_AVAILABILITY, model.gps.numsat>6);
-
 			}
 		});
 
@@ -293,10 +279,8 @@ public class MAVLinkToModelParser {
 			public void received(Object o) {
 				msg_system_time time = (msg_system_time)o;
 				model.sys.t_boot_ms = time.time_boot_ms;
-
 			}
 		});
-
 
 		registerListener(msg_home_position.class, new IMAVLinkListener() {
 			@Override
@@ -340,7 +324,6 @@ public class MAVLinkToModelParser {
 				model.state.l_vz = ned.vz;
 
 				model.state.tms = ned.time_boot_ms*1000;
-
 			}
 		});
 
@@ -358,10 +341,8 @@ public class MAVLinkToModelParser {
 				model.state.l_vz = ned.vz;
 
 				model.state.tms = ned.time_boot_ms*1000;
-
 			}
 		});
-
 
 		registerListener(msg_position_target_local_ned.class, new IMAVLinkListener() {
 			@Override
@@ -380,7 +361,6 @@ public class MAVLinkToModelParser {
 				model.target_state.tms = ned.time_boot_ms*1000;
 
 				model.sys.setStatus(Status.MSP_LPOS_AVAILABILITY, true);
-
 			}
 		});
 
@@ -400,7 +380,6 @@ public class MAVLinkToModelParser {
 
 				gpos_tms = System.currentTimeMillis();
 				model.sys.setStatus(Status.MSP_GPOS_AVAILABILITY, true);
-
 			}
 		});
 
@@ -421,7 +400,6 @@ public class MAVLinkToModelParser {
 				model.imu.magz = imu.zmag;
 				model.hud.ap   = imu.pressure_alt;
 
-
 				model.imu.abs_pressure = imu.abs_pressure;
 
 				model.sys.imu_temp = (int)imu.temperature;
@@ -429,11 +407,8 @@ public class MAVLinkToModelParser {
 
 				model.sys.setStatus(Status.MSP_READY,true);
 				notifyStatusChange();
-
-
 			}
 		});
-
 
 		registerListener(msg_statustext.class, new IMAVLinkListener() {
 			@Override
@@ -470,10 +445,8 @@ public class MAVLinkToModelParser {
 				model.rc.tms = rc.time_boot_ms;
 
 				notifyStatusChange();
-
 			}
 		});
-
 
 		registerListener(msg_heartbeat.class, new IMAVLinkListener() {
 			@Override
@@ -489,7 +462,6 @@ public class MAVLinkToModelParser {
 				model.sys.setStatus(Status.MSP_ARMED, (hb.base_mode & MAV_MODE_FLAG.MAV_MODE_FLAG_SAFETY_ARMED)!=0);
 
 				model.sys.setStatus(Status.MSP_CONNECTED, true);
-
 
 				model.sys.setStatus(Status.MSP_MODE_ALTITUDE, MAV_CUST_MODE.is(hb.custom_mode,MAV_CUST_MODE.PX4_CUSTOM_MAIN_MODE_ALTCTL));
 				model.sys.setStatus(Status.MSP_MODE_POSITION, MAV_CUST_MODE.is(hb.custom_mode,MAV_CUST_MODE.PX4_CUSTOM_MAIN_MODE_POSCTL));
@@ -524,9 +496,7 @@ public class MAVLinkToModelParser {
 				if(bat.current_consumed>0)
 					model.battery.a0 = bat.current_consumed;
 			}
-
 		});
-
 
 		registerListener(msg_sys_status.class, new IMAVLinkListener() {
 			@Override
@@ -548,10 +518,6 @@ public class MAVLinkToModelParser {
 				//
 				//				model.sys.setSensor(Status.MSP_GPS_AVAILABILITY,
 				//						(sys.onboard_control_sensors_enabled & MAV_SYS_STATUS_SENSOR.MAV_SYS_STATUS_SENSOR_GPS)>0);
-
-
-
-
 			}
 		});
 
@@ -568,7 +534,6 @@ public class MAVLinkToModelParser {
 		});
 
 		System.out.println("MAVLink parser: "+listeners.size()+" MAVLink messagetypes registered");
-
 	}
 
 	public void addMAVLinkListener(IMAVLinkListener listener) {
@@ -578,7 +543,6 @@ public class MAVLinkToModelParser {
 	public void addMAVMessagekListener(IMAVMessageListener listener) {
 		msgListener.add(listener);
 	}
-
 
 	public Map<Class<?>,MAVLinkMessage> getMavLinkMessageMap() {
 		return mavList;
@@ -606,7 +570,6 @@ public class MAVLinkToModelParser {
 		return model.sys.isStatus(Status.MSP_CONNECTED);
 	}
 
-
 	public void stop() {
 		isRunning = false;
 	}
@@ -624,7 +587,6 @@ public class MAVLinkToModelParser {
 			}
 		}
 	}
-
 
 	private void registerListener(Class<?> clazz, IMAVLinkListener listener) {
 		listeners.put(clazz, listener);
@@ -683,7 +645,6 @@ public class MAVLinkToModelParser {
 						Thread.sleep(50);
 					}
 
-
 					if((System.nanoTime()/1000) > (model.imu.tms+5000000) &&
 							model.sys.isStatus(Status.MSP_READY)) {
 						model.sys.setStatus(Status.MSP_READY, false);
@@ -696,7 +657,6 @@ public class MAVLinkToModelParser {
 			}
 		}
 	}
-
 
 	private synchronized void notifyStatusChange() {
 		if(!oldStatus.isEqual(model.sys) && (System.currentTimeMillis() - startUpAt)>2000) {
@@ -715,10 +675,6 @@ public class MAVLinkToModelParser {
 				MSPLogger.getInstance().writeLocalMsg("Offboard enabled", MAV_SEVERITY.MAV_SEVERITY_INFO);
 
 			oldStatus.set(model.sys);
-
-
 		}
-
 	}
-
 }

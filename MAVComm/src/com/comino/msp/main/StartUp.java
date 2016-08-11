@@ -34,7 +34,6 @@
 
 package com.comino.msp.main;
 
-import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 
 import org.mavlink.messages.lquac.msg_msp_command;
@@ -48,8 +47,8 @@ import com.comino.msp.model.segment.Status;
 
 public class StartUp implements Runnable {
 
-	IMAVMSPController    control = null;
-	MSPConfig	          config  = null;
+	IMAVMSPController control = null;
+	MSPConfig config = null;
 
 	private OperatingSystemMXBean osBean = null;
 
@@ -66,7 +65,6 @@ public class StartUp implements Runnable {
 		 osBean =  java.lang.management.ManagementFactory.getOperatingSystemMXBean();
 
 		MSPLogger.getInstance(control);
-
 
 		// TODO 1.0: Start services if required
 
@@ -88,17 +86,11 @@ public class StartUp implements Runnable {
         worker.start();
 
         control.getCurrentModel().sys.setMSPStatus(Status.MSP_HEALTH_OK, true);
-
 	}
-
-
 
 	public static void main(String[] args) {
 		new StartUp(args);
-
 	}
-
-
 
 	@Override
 	public void run() {
@@ -121,7 +113,5 @@ public class StartUp implements Runnable {
 				control.close();
 			}
 		}
-
 	}
-
 }

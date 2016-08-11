@@ -42,10 +42,8 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.mavlink.messages.MAVLinkMessage;
-import org.mavlink.messages.lquac.msg_statustext;
 
 import com.comino.mav.mavlink.MAVLinkStream;
 import com.comino.msp.main.control.listener.IMAVLinkListener;
@@ -74,8 +72,6 @@ public class MAVUdpProxyNIO2 implements IMAVLinkListener  {
 	}
 
 	public boolean open() {
-
-
 		if(channel!=null && channel.isConnected()) {
 			isConnected = true;
 			return true;
@@ -92,71 +88,66 @@ public class MAVUdpProxyNIO2 implements IMAVLinkListener  {
 
 			while(true) {
 
-				  int readyChannels = selector.select();
-				  if(readyChannels == 0) continue;
+				int readyChannels = selector.select();
+				if(readyChannels == 0) continue;
 
-				  Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
+				Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
 
-				  while(keyIterator.hasNext()) {
+				while(keyIterator.hasNext()) {
 
-				    SelectionKey k = keyIterator.next();
+					SelectionKey k = keyIterator.next();
 
-				    if(k.isAcceptable()) {
-				    	System.out.println("MAVProxy connected to "+peerPort.toString()+" Blocking="+channel.isBlocking());
+					if(k.isAcceptable()) {
+						System.out.println("MAVProxy connected to "+peerPort.toString()+" Blocking="+channel.isBlocking());
 
-				    } else if (k.isConnectable()) {
-				    	System.out.println("MAVProxy connected to "+peerPort.toString()+" Blocking="+channel.isBlocking());
+					} else if (k.isConnectable()) {
+						System.out.println("MAVProxy connected to "+peerPort.toString()+" Blocking="+channel.isBlocking());
 
-				    } else if (k.isReadable()) {
-				        // a channel is ready for reading
+					} else if (k.isReadable()) {
+						// a channel is ready for reading
 
-				    } else if (k.isWritable()) {
-				        // a channel is ready for writing
-				    }
-				    keyIterator.remove();
-				  }
+					} else if (k.isWritable()) {
+						// a channel is ready for writing
+					}
+					keyIterator.remove();
 				}
-
-
-
+			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 			close();
 			isConnected = false;
 		}
 
+		return true;
 
-  return true;
-
-//		while(!isConnected) {
-//			try {
-//				isConnected = true;
-//				//			System.out.println("Connect to UDP channel");
-//				try {
-//					channel = DatagramChannel.open();
-//					channel.socket().bind(bindPort);
-//					channel.configureBlocking(true);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//				channel.connect(peerPort);
-//				in = new MAVLinkStream(channel);
-//				System.out.println("MAVProxy connected to "+peerPort.toString()+" Blocking="+channel.isBlocking());
-//				return true;
-//			} catch(Exception e) {
-//				System.out.println(e.getMessage());
-//				close();
-//				isConnected = false;
-//
-//			}
-//		}
-//		return false;
+		//		while(!isConnected) {
+		//			try {
+		//				isConnected = true;
+		//				//			System.out.println("Connect to UDP channel");
+		//				try {
+		//					channel = DatagramChannel.open();
+		//					channel.socket().bind(bindPort);
+		//					channel.configureBlocking(true);
+		//				} catch (IOException e) {
+		//					e.printStackTrace();
+		//				}
+		//				channel.connect(peerPort);
+		//				in = new MAVLinkStream(channel);
+		//				System.out.println("MAVProxy connected to "+peerPort.toString()+" Blocking="+channel.isBlocking());
+		//				return true;
+		//			} catch(Exception e) {
+		//				System.out.println(e.getMessage());
+		//				close();
+		//				isConnected = false;
+		//
+		//			}
+		//		}
+		//		return false;
 	}
 
 	public boolean isConnected() {
 		return isConnected;
 	}
-
 
 	public void close() {
 		isConnected = false;
@@ -173,10 +164,8 @@ public class MAVUdpProxyNIO2 implements IMAVLinkListener  {
 		return in;
 	}
 
-
 	public void write(MAVLinkMessage msg) {
 		try {
-
 			if(isConnected) {
 
 				if(!channel.isConnected())
@@ -197,20 +186,8 @@ public class MAVUdpProxyNIO2 implements IMAVLinkListener  {
 		}
 	}
 
-
 	@Override
 	public void received(Object o) {
 		write((MAVLinkMessage) o);
 	}
-
-
-
-
-
-
-
-
-
-
-
 }

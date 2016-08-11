@@ -40,8 +40,12 @@ import com.comino.msp.log.MSPLogger;
 public class MAVCommTest implements Runnable {
 
 	private IMAVController control = null;
-	MSPConfig	           config  = null;
+	MSPConfig config = null;
 
+	public static void main(String[] args) {
+		new MAVCommTest(args);
+	}
+	
 	public MAVCommTest(String[] args) {
 
 		String peerAddress = null;
@@ -49,7 +53,6 @@ public class MAVCommTest implements Runnable {
 		if(args.length> 0) {
 			peerAddress  = args[0];
 		}
-
 
 		if(args.length>0)
 			control = new MAVUdpController(peerAddress,14555,14550, true);
@@ -62,12 +65,6 @@ public class MAVCommTest implements Runnable {
 		MSPLogger.getInstance(control);
 
 		new Thread(this).start();
-
-	}
-
-	public static void main(String[] args) {
-		new MAVCommTest(args);
-
 	}
 
 	@Override
@@ -82,7 +79,5 @@ public class MAVCommTest implements Runnable {
 				e.printStackTrace();
 			}
 		}
-
 	}
-
 }

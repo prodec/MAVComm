@@ -36,7 +36,5 @@ package com.comino.msp.main.control.listener;
 
 
 public interface IMAVLinkListener {
-
 	public void received(Object o);
-
 }

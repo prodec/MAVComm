@@ -39,12 +39,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ExecutorService {
 
-
 	private static final int MAXTHREADS = 35;
 
 	private static ScheduledThreadPoolExecutor schedThPoolExec =
 			new ScheduledThreadPoolExecutor(MAXTHREADS);
-
 	{
 
 		schedThPoolExec.prestartAllCoreThreads();
@@ -60,13 +58,9 @@ public class ExecutorService {
 		return (int)schedThPoolExec.getActiveCount();
 	}
 
-
 	public static void shutdown() {
 		schedThPoolExec.shutdownNow();
 	}
-
-
-
 
 }
 

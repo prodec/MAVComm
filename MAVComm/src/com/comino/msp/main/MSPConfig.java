@@ -34,9 +34,6 @@
 
 package com.comino.msp.main;
 
-
-
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,7 +68,6 @@ public class MSPConfig {
 		refreshProperties();
 		this.version = prop.getProperty("build","tmp");
 	}
-
 
 	public void updateProperty(String item, String value)  {
 		this.prop.setProperty(item, value);
@@ -134,6 +130,5 @@ public class MSPConfig {
 	public float getFloatProperty(String key, String defaultValue) {
 		return Float.parseFloat(prop.getProperty(key, defaultValue));
 	}
-
 
 }

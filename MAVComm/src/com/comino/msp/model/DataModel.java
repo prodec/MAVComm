@@ -63,23 +63,22 @@ public class DataModel extends Segment implements Serializable {
 	 */
 	private static final long serialVersionUID = 3439530621929819600L;
 
-	public   Attitude    attitude = null;
-	public   Battery     battery  = null;
-	public   Hud   			 hud  = null;
-	public 	 Imu			 imu  = null;
-	public   State		   state  = null;
-	public   State	 target_state = null;
-	public   State     home_state = null;
-	public   Telemetry telemetry  = null;
-	public	 GPS	         gps  = null;
-	public	 Raw			 raw  = null;
-	public   Status          sys  = null;
-	public	 Servo			servo = null;
-	public	 Rc				  rc  = null;
-	public   Vibration  vibration = null;
-	public   Debug		    debug = null;
-	public   LogMessage       msg = null;
-
+	public Attitude attitude = null;
+	public Battery battery = null;
+	public Hud hud = null;
+	public Imu imu = null;
+	public State state = null;
+	public State target_state = null;
+	public State home_state = null;
+	public Telemetry telemetry = null;
+	public GPS gps = null;
+	public Raw raw = null;
+	public Status sys = null;
+	public Servo servo = null;
+	public Rc rc = null;
+	public Vibration vibration = null;
+	public Debug debug = null;
+	public LogMessage msg = null;
 
 	public DataModel()  {
 		this.attitude       = new Attitude();
@@ -98,8 +97,6 @@ public class DataModel extends Segment implements Serializable {
 		this.vibration      = new Vibration();
 		this.debug          = new Debug();
 		this.msg            = new LogMessage();
-
-
 	}
 
 	public DataModel(DataModel m) {
@@ -125,7 +122,6 @@ public class DataModel extends Segment implements Serializable {
 		this.tms            = m.tms;
 		this.msg            = m.msg.clone();
 	}
-
 
 	public void set(DataModel m) {
 		this.attitude.set(m.attitude);

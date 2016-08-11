@@ -34,6 +34,7 @@
 
 package com.comino.mav.comm.highspeedserial;
 
+import com.comino.mav.comm.serial.MAVSerialComm;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 
@@ -58,7 +59,7 @@ public class SerialAMA0 {
 	}
 
 	public void open() {
-		DLibrary.INSTANCE.openAMA0(921600);
+		DLibrary.INSTANCE.openAMA0(MAVSerialComm.BAUDRATE);
 		//DLibrary.INSTANCE.openAMA0(57600);
 		System.out.println("SerialAMA0 opened");
 	}

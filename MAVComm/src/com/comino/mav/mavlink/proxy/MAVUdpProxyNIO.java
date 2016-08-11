@@ -39,16 +39,12 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.util.LinkedList;
 
 import org.mavlink.messages.MAVLinkMessage;
-import org.mavlink.messages.lquac.msg_statustext;
 
 import com.comino.mav.mavlink.MAVLinkStream;
 import com.comino.msp.main.control.listener.IMAVLinkListener;
-
 
 public class MAVUdpProxyNIO implements IMAVLinkListener  {
 
@@ -60,7 +56,6 @@ public class MAVUdpProxyNIO implements IMAVLinkListener  {
 	private MAVLinkStream			in	   = null;
 
 	private LinkedList<MAVLinkMessage> queue = null;
-
 
 	private boolean 			isConnected = false;
 
@@ -77,14 +72,12 @@ public class MAVUdpProxyNIO implements IMAVLinkListener  {
 
 		this.queue = new LinkedList<MAVLinkMessage>();
 
-
 		System.out.println("Proxy: BindPort="+bPort+" PeerPort="+pPort);
-
 	}
 
 	public boolean open() {
 
-		if(channel!=null && channel.isConnected()) {
+		if (channel != null && channel.isConnected()) {
 			isConnected = true;
 			return true;
 		}
@@ -122,7 +115,6 @@ public class MAVUdpProxyNIO implements IMAVLinkListener  {
 		return isConnected;
 	}
 
-
 	public void close() {
 		isConnected = false;
 		try {
@@ -142,16 +134,14 @@ public class MAVUdpProxyNIO implements IMAVLinkListener  {
 	//		queue.add(msg);
 	//	}
 
-
 	public synchronized  void write(MAVLinkMessage msg) {
 		try {
-
 			if(isConnected) {
 
 				if(!channel.isConnected())
 					return;
 
-				if(msg!=null) {
+				if (msg != null) {
 					buffer.put(msg.encode());
 					buffer.flip();
 					channel.write(buffer);
@@ -168,10 +158,8 @@ public class MAVUdpProxyNIO implements IMAVLinkListener  {
 		}
 	}
 
-
 	@Override
 	public void received(Object o) {
 		write((MAVLinkMessage) o);
 	}
-
 }

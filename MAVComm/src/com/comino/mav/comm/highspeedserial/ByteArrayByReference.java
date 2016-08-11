@@ -64,7 +64,6 @@ public class ByteArrayByReference extends ByReference {
         return getPointer().getByteArray(0, len);
     }
 
-
     public int length() {
     	return buffer.length;
     }

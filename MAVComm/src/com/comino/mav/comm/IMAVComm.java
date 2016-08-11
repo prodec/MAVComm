@@ -35,7 +35,6 @@
 package com.comino.mav.comm;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import org.mavlink.messages.MAVLinkMessage;
@@ -65,7 +64,6 @@ public interface IMAVComm {
 	public void addModeChangeListener(IMSPModeChangedListener listener);
 
 	public boolean isConnected();
-
 
 	public void writeMessage(LogMessage m);
 

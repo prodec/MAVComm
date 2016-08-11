@@ -33,9 +33,6 @@
 
 package com.comino.msp.log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.mavlink.messages.MAV_SEVERITY;
 
 import com.comino.mav.control.IMAVController;
@@ -48,8 +45,6 @@ public class MSPLogger {
 	private static MSPLogger log = null;
 	private IMAVController control = null;
 	private boolean debug_msg_enabled = false;
-
-
 
 	public static MSPLogger getInstance(IMAVController control) {
 		if(log==null) {

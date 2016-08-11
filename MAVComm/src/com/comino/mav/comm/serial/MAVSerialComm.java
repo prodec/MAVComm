@@ -35,8 +35,11 @@
 package com.comino.mav.comm.serial;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
+
+import jssc.SerialPort;
+import jssc.SerialPortException;
+import jssc.SerialPortList;
 
 import org.mavlink.messages.MAVLinkMessage;
 import org.mavlink.messages.MAV_CMD;
@@ -54,26 +57,19 @@ import com.comino.msp.model.collector.ModelCollectorService;
 import com.comino.msp.model.segment.LogMessage;
 import com.comino.msp.model.segment.Status;
 
-import jssc.SerialPort;
-import jssc.SerialPortException;
-import jssc.SerialPortList;
-
-
 public class MAVSerialComm implements IMAVComm {
 
-	private static final int BAUDRATE  = 57600;
+	public static final int BAUDRATE  = 57600;
 //	private static final int BAUDRATE  = 921600;
 
+	private SerialPort serialPort;
+	private String port;
 
-	private SerialPort 			serialPort;
-	private String	        port;
-
-	private DataModel 			model = null;
+	private DataModel model = null;
 
 	private MAVLinkToModelParser parser = null;
 
 	private static IMAVComm com = null;
-
 
 	public static IMAVComm getInstance(DataModel model) {
 		if(com==null)
@@ -94,14 +90,13 @@ public class MAVSerialComm implements IMAVComm {
 			}
 
 			port = list[i];
-		}
-		else
+		} else {
 			port ="/dev/tty.SLAB_USBtoUART";
+		}
 
 		serialPort = new SerialPort(port);
 		parser = new MAVLinkToModelParser(model, this);
 		parser.start(new SerialPortChannel(serialPort));
-
 	}
 
 	/* (non-Javadoc)
@@ -118,8 +113,6 @@ public class MAVSerialComm implements IMAVComm {
 		return true;
 	}
 
-
-
 	/* (non-Javadoc)
 	 * @see com.comino.px4.control.serial.IPX4Comm#getModel()
 	 */
@@ -127,7 +120,6 @@ public class MAVSerialComm implements IMAVComm {
 	public DataModel getModel() {
 		return model;
 	}
-
 
 	@Override
 	public Map<Class<?>,MAVLinkMessage> getMavLinkMessageMap() {
@@ -151,7 +143,6 @@ public class MAVSerialComm implements IMAVComm {
 		try {
 			serialPort.openPort();
 			serialPort.setParams(baudRate, dataBits, stopBits, parity);
-
 		} catch (Exception e2) {
 			try {
 				serialPort.closePort();
@@ -165,7 +156,6 @@ public class MAVSerialComm implements IMAVComm {
 		System.out.println("Connected to "+serialPort.getPortName());
 		model.sys.setStatus(Status.MSP_CONNECTED, true);
 		return true;
-
 	}
 
 	/* (non-Javadoc)
@@ -183,24 +173,18 @@ public class MAVSerialComm implements IMAVComm {
 	@Override
 	public void addMAVLinkListener(IMAVLinkListener listener) {
 		parser.addMAVLinkListener(listener);
-
 	}
-
 
 	public static void main(String[] args) {
 		IMAVComm comm = new MAVSerialComm(new DataModel());
 		comm.open();
 
-
 		long time = System.currentTimeMillis();
-
 
 		try {
 
-
 			ModelCollectorService colService = new ModelCollectorService(comm.getModel());
 			colService.start();
-
 
 		//	while(System.currentTimeMillis()< (time+30000)) {
 
@@ -215,7 +199,6 @@ public class MAVSerialComm implements IMAVComm {
 
 				cmd.param1 = MAV_MODE_FLAG.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
 				cmd.param2 = 2;
-
 
 				try {
 					comm.write(cmd);
@@ -248,12 +231,7 @@ public class MAVSerialComm implements IMAVComm {
 		} catch (Exception e) {
 			comm.close();
 			e.printStackTrace();
-
 		}
-
-
-
-
 	}
 
 	@Override
@@ -264,19 +242,15 @@ public class MAVSerialComm implements IMAVComm {
 	@Override
 	public void addModeChangeListener(IMSPModeChangedListener listener) {
 		parser.addModeChangeListener(listener);
-
 	}
 
 	@Override
 	public void addMAVMessageListener(IMAVMessageListener listener) {
 		parser.addMAVMessagekListener(listener);
-
 	}
 
 	@Override
 	public void writeMessage(LogMessage m) {
 
-
 	}
-
 }

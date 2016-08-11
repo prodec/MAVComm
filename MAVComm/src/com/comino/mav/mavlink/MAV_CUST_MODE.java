@@ -60,8 +60,6 @@ public class MAV_CUST_MODE {
 			"Return, Link Loss","Follow Me","Unknown"
 	};
 
-
-
 	public static boolean is(long custom, int mode) {
 		custom = custom & 0xFFFFFFFF;
 			return ((custom >> 16) & 0xFF) == mode;
@@ -109,6 +107,4 @@ public class MAV_CUST_MODE {
 			return mode_string[14];
 		return mode_string[15];
 	}
-
-
 }
