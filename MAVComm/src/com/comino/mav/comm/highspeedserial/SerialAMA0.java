@@ -79,7 +79,6 @@ public class SerialAMA0 {
 
 	public byte[] readBytes(int n) {
 		return buffer.getValue(n);
-
 	}
 
 	public static void main(String[] args) {
@@ -99,7 +98,14 @@ public class SerialAMA0 {
 				e.printStackTrace();
 			}
 
-			byte[] b =ama0.readBytes(ama0.getInputBufferBytesCount());
+			int count = ama0.getInputBufferBytesCount();
+			
+			if (count < 0) {
+				System.out.print("Serial not found");
+				return;
+			}
+			
+			byte[] b = ama0.readBytes(count);
 			System.out.print(" bytes received => ");
 			for(int i=0; i<b.length;i++)
 				System.out.print(" "+b[i]);
