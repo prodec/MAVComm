@@ -17,3 +17,12 @@ It is currently tested with the following systems:
 - Raspberry PI 2
 
 - UP-Board (in progress)
+
+### Generating the library file
+
+To generate the library (.so) file, do:
+
+```
+cd MAVComm/MAVComm/native
+gcc -fPIC -shared serial_highspeed.c -o libAMA0.so
+```
